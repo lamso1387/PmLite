@@ -15,11 +15,18 @@ namespace PmLite
         public Form1()
         {
             InitializeComponent();
+            
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
+            Publics.srlwinui.FullScreenNoTaskbar(this);
+        }
+
+        private void miWorkToDo_Click(object sender, EventArgs e)
+        {
+            Publics.srltools.AddChildToParentControlsZoomAndAliagn(pnlMain, new WorkToDo());
         }
     }
 }
