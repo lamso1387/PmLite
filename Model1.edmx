@@ -5,6 +5,15 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Database1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BaseValuesTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="50" />
+          <Property Name="type" Type="nvarchar" MaxLength="50" />
+          <Property Name="value" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="WorksTB">
           <Key>
             <PropertyRef Name="Id" />
@@ -12,8 +21,13 @@
           <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="priority" Type="bigint" />
           <Property Name="context" Type="nvarchar(max)" />
+          <Property Name="status" Type="nvarchar" MaxLength="50" />
+          <Property Name="type" Type="nvarchar" MaxLength="50" />
+          <Property Name="date_created" Type="datetime" />
+          <Property Name="date_last_updated" Type="datetime" />
         </EntityType>
         <EntityContainer Name="Database1ModelStoreContainer">
+          <EntitySet Name="BaseValuesTB" EntityType="Self.BaseValuesTB" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WorksTB" EntityType="Self.WorksTB" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -22,6 +36,7 @@
       <Schema Namespace="Database1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="Database1Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="WorksTB" EntityType="Database1Model.WorksTB" />
+          <EntitySet Name="BaseValuesTB" EntityType="Database1Model.BaseValuesTB" />
         </EntityContainer>
         <EntityType Name="WorksTB">
           <Key>
@@ -30,6 +45,19 @@
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="priority" Type="Int64" />
           <Property Name="context" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="date_created" Type="DateTime" Precision="3" />
+          <Property Name="date_last_updated" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="BaseValuesTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="value" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -40,8 +68,22 @@
           <EntitySetMapping Name="WorksTB">
             <EntityTypeMapping TypeName="Database1Model.WorksTB">
               <MappingFragment StoreEntitySet="WorksTB">
+                <ScalarProperty Name="date_last_updated" ColumnName="date_last_updated" />
+                <ScalarProperty Name="date_created" ColumnName="date_created" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="context" ColumnName="context" />
                 <ScalarProperty Name="priority" ColumnName="priority" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BaseValuesTB">
+            <EntityTypeMapping TypeName="Database1Model.BaseValuesTB">
+              <MappingFragment StoreEntitySet="BaseValuesTB">
+                <ScalarProperty Name="value" ColumnName="value" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="title" ColumnName="title" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

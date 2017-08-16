@@ -15,8 +15,11 @@ namespace PmLite
         public static SRL.WinUI.FormClass srlform = new SRL.WinUI.FormClass();
         public static SRL.WinTools srltools = new SRL.WinTools();
         public static SRL.FileManagement srlfile = new SRL.FileManagement();
+        public static SRL.DateTimeLanguageClass srldatelanguage = new SRL.DateTimeLanguageClass();
+        public static SRL.Convertor srlconvert = new SRL.Convertor();
+
         public static SRL.WinUI.DatagridviewClass srldgvui = new SRL.WinUI.DatagridviewClass();
-        public static SRL.WinUI.PictureBoxClass.PictureBoxHover srlpicturhover= new SRL.WinUI.PictureBoxClass.PictureBoxHover();
+        public static SRL.WinUI.PictureBoxClass.PictureBoxHover srlpicturhover = new SRL.WinUI.PictureBoxClass.PictureBoxHover();
         public static SRL.ChildParent srlchildparent = new SRL.ChildParent();
         public static string database_name = Properties.Settings.Default.database_name;
         public static string database_log_name = Properties.Settings.Default.database_log_name;
@@ -27,22 +30,33 @@ namespace PmLite
             Up,
             Down
         }
+        public enum BaseValueType
+        {
+            WorkType,
+            WorkStatus
+        }
         public class PriorityClass
         {
-            
-            public static void NewPriorityAdded(long new_priority_added)
-            {
-                if (!Publics.dbGlobal.WorksTB.Where(x => x.priority == new_priority_added).Any()) return;
 
-                AddToPrioririesMoreEqual(new_priority_added, 1);
+            public static void NewPriorityAdded(long new_priority_added, string work_type, long new_added_work_id)
+            {
+                if (!Publics.dbGlobal.WorksTB.Where(x => x.status == WorksClass.WorkStatus.Undone.ToString() && x.type == work_type && x.priority == new_priority_added).Any()) return;
+
+                AddToPrioriries(new_priority_added,null, work_type, 1,new_added_work_id);
 
                 Publics.dbGlobal.SaveChanges();
             }
 
-            public static void AddToPrioririesMoreEqual(long priority_equal_or_more_than, int add_value)
+            public static void AddToPrioriries(long? priority_equal_or_more_than, long? priority_equal_or_less_than, string work_type, int add_value, long? work_Id_not_add)
             {
-                foreach (var item in Publics.dbGlobal.WorksTB.Where(x => x.priority >= priority_equal_or_more_than))
+
+                var query = Publics.dbGlobal.WorksTB.Where(x => x.status == WorksClass.WorkStatus.Undone.ToString() && x.type == work_type);
+                if (priority_equal_or_more_than != null) query = query.Where(x => x.priority >= priority_equal_or_more_than);
+                if (priority_equal_or_less_than != null) query = query.Where(x => x.priority <= priority_equal_or_less_than);
+
+                foreach (var item in query)
                 {
+                    if (item.Id == work_Id_not_add) continue;
                     item.priority = item.priority + add_value;
                 }
 
@@ -51,18 +65,18 @@ namespace PmLite
 
 
 
-            public static void RemovePriorityGaps()
+            public static void RemovePriorityGaps(string work_type)
             {
-                long? min_prio = Publics.dbGlobal.WorksTB.Min(x => x.priority);
-                long? max_prio = Publics.dbGlobal.WorksTB.Max(x => x.priority);
+                long? min_prio = Publics.dbGlobal.WorksTB.Where(x => x.status == WorksClass.WorkStatus.Undone.ToString() && x.type == work_type).Min(x => x.priority);
+                long? max_prio = Publics.dbGlobal.WorksTB.Where(x => x.status == WorksClass.WorkStatus.Undone.ToString() && x.type == work_type).Max(x => x.priority);
 
                 if (max_prio == null || min_prio == null) return;
 
 
                 for (long i = (long)min_prio; i < max_prio; i++)
                 {
-                    if (Publics.dbGlobal.WorksTB.Where(x => x.priority == i).Any()) continue;
-                    AddToPrioririesMoreEqual(i, -1);
+                    if (Publics.dbGlobal.WorksTB.Where(x => x.status == WorksClass.WorkStatus.Undone.ToString() && x.type == work_type && x.priority == i).Any()) continue;
+                    AddToPrioriries(i,null, work_type, -1,null);
                     max_prio--;
                     i--;
                 }
@@ -70,17 +84,22 @@ namespace PmLite
                 Publics.dbGlobal.SaveChanges();
             }
 
-            public static void EditPriority(long work_id_to_edit, long Edited_to_priority)
+            public static void EditPriority(long work_id_to_edit, long Edited_to_priority, string work_type)
             {
-                var exists = Publics.dbGlobal.WorksTB.Where(x => x.priority == Edited_to_priority);
-                if (exists.Any()) {
-                    ReplacePriorirty(work_id_to_edit, exists.First().Id);
+                long former_prio = (long)Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id_to_edit).First().priority;
+
+                Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id_to_edit).First().priority = Edited_to_priority;
+
+                var exists = Publics.dbGlobal.WorksTB.Where(x => x.Id != work_id_to_edit && x.status == WorksClass.WorkStatus.Undone.ToString() && x.type == work_type && x.priority == Edited_to_priority);
+
+                if (exists.Any())
+                {
+                    if(former_prio >= Edited_to_priority)
+                        AddToPrioriries(Edited_to_priority, former_prio, work_type, 1, work_id_to_edit);
+                    else
+                        AddToPrioriries(former_prio, Edited_to_priority, work_type, -1, work_id_to_edit);
                 }
 
-                else
-                {
-                    Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id_to_edit).First().priority=Edited_to_priority;
-                }
 
                 Publics.dbGlobal.SaveChanges();
 
@@ -90,55 +109,73 @@ namespace PmLite
             public static void TryReArrangePriorirty(DataGridView dgv, ChangeDirectuon direction)
             {
                 long destination_id = 0;
+                var cur_type = dgv.SelectedRows[0].Cells["type"].Value.ToString();
 
-                if (WorksClass.TryGetDestinationWorkId(dgv, direction, out destination_id))
+                if (WorksClass.TryGetDestinationWorkId(dgv, direction, cur_type, out destination_id))
                 {
 
                     var cur_id = long.Parse(dgv.SelectedRows[0].Cells["id"].Value.ToString());
-                    ReplacePriorirty(long.Parse(dgv.SelectedRows[0].Cells["id"].Value.ToString()), destination_id);
-                    Publics.WorksClass.LoadDataGridViewWorkList(dgv,cur_id);
-                    Publics.WorksClass.LoadDataGridViewWorkList(dgv, cur_id);
+                    ReplacePriorirty(cur_id, destination_id);
+                    Publics.WorksClass.LoadDataGridViewWorkList(dgv, Publics.WorksClass.WorkStatus.Undone, cur_type, cur_id);
                 }
                 else MessageBox.Show("تغییر ناممکن");
             }
 
-            public static void ReplacePriorirty(long work_id1,long work_id2)
+            public static void ReplacePriorirty(long work_id1, long work_id2)
             {
-                    
-                    var prio1 = Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id1).First().priority;
 
-                    Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id1).First().priority = Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id2).First().priority;
-                    Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id2).First().priority = prio1;
-                    Publics.dbGlobal.SaveChanges();
-                }
+                var prio1 = Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id1).First().priority;
+
+                Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id1).First().priority = Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id2).First().priority;
+                Publics.dbGlobal.WorksTB.Where(x => x.Id == work_id2).First().priority = prio1;
+                Publics.dbGlobal.SaveChanges();
             }
+        }
 
         public class WorksClass
         {
+            public enum WorkStatus
+            {
+                Undone,
+                Done
+            }
 
-            public static void LoadDataGridViewWorkList(DataGridView dgv, long? work_id_to_select=null)
+            public static void LoadDataGridViewWorkList(DataGridView dgv, WorkStatus work_status, string work_type = null, long? work_id_to_select = null)
             {
                 dgv.Rows.Clear();
                 int? index_to_select = null;
-                foreach (var item in Publics.dbGlobal.WorksTB.OrderBy(x => x.priority))
+                var query = Publics.dbGlobal.WorksTB.Where(x => x.status == work_status.ToString()).Where(x => (work_type == null || work_type == "") ? true : x.type == work_type).OrderBy(x => x.priority).AsQueryable();
+
+                dgv.Tag = query.Count();
+
+                //if (from != null) query = query.Skip((int)from);
+                //if (count != null) query = query.Take((int)count);
+
+
+                foreach (var item in query)
                 {
-                 int index= dgv.Rows.Add(item.Id, item.priority, item.context);
+                    int index = dgv.Rows.Add(item.Id, item.priority, item.context, item.type);
                     if (item.Id == work_id_to_select) index_to_select = index;
                 }
                 if (index_to_select != null) dgv.Rows[(int)index_to_select].Selected = true;
-                
+
+                var en = dgv.Enabled;
+                dgv.Enabled = !en;
+                dgv.Enabled = en;
+
             }
 
-            public static void DeleteWork(long id_to_delete)
+            public static void DeleteWork(long id_to_delete, string work_type)
             {
                 var del = Publics.dbGlobal.WorksTB.Where(x => x.Id == id_to_delete).First();
                 var prio = del.priority;
                 Publics.dbGlobal.WorksTB.Remove(del);
-                PriorityClass.AddToPrioririesMoreEqual((long)prio, -1);
+                Publics.dbGlobal.SaveChanges();
+                PriorityClass.AddToPrioriries((long)prio,null, work_type, -1,null);
 
 
             }
-            public static bool TryGetDestinationWorkId(DataGridView dgv, ChangeDirectuon direction, out long destination_id)
+            public static bool TryGetDestinationWorkId(DataGridView dgv, ChangeDirectuon direction, string work_type, out long destination_id)
             {
                 destination_id = 0;
 
@@ -150,24 +187,52 @@ namespace PmLite
                 {
                     case ChangeDirectuon.Up:
                         if (selected_index == 0) return false;
-                        destination_id = long.Parse(dgv.Rows[selected_index - 1].Cells["id"].Value.ToString());
+                        DataGridViewRow row = dgv.Rows[selected_index - 1];
+                        if (row.Cells["type"].Value.ToString() != work_type) return false;
+                        destination_id = long.Parse(row.Cells["id"].Value.ToString());
                         return true;
                     case ChangeDirectuon.Down:
                         if (selected_index == dgv.RowCount - 1) return false;
-                        destination_id = long.Parse(dgv.Rows[selected_index + 1].Cells["id"].Value.ToString());
+                        row = dgv.Rows[selected_index + 1];
+                        if (row.Cells["type"].Value.ToString() != work_type) return false;
+                        destination_id = long.Parse(row.Cells["id"].Value.ToString());
                         return true;
                 }
                 return false;
 
             }
-            public static long AddNewWork(string tbContext, long priority)
+
+            internal static void ChangeWorkStatus(DataGridView dgv, WorkStatus work_status)
+            {
+                if (dgv.SelectedRows.Count < 1) return;
+                long id = long.Parse(dgv.SelectedRows[0].Cells["id"].Value.ToString());
+
+                Publics.dbGlobal.WorksTB.Where(x => x.Id == id).First().status = work_status.ToString();
+
+                if (work_status == WorkStatus.Undone)
+                {
+                    long prio = long.Parse(dgv.SelectedRows[0].Cells["priority"].Value.ToString());
+                    string type = dgv.SelectedRows[0].Cells["type"].Value.ToString();
+                    Publics.PriorityClass.EditPriority(id, prio, type);
+                }
+
+
+                Publics.dbGlobal.SaveChanges();
+
+            }
+
+            public static long AddNewWork(string tbContext, long priority, string work_type)
             {
                 WorksTB work = new WorksTB();
                 work.context = tbContext;
                 work.priority = priority;
+                work.date_created = DateTime.Now;
+                work.status = WorkStatus.Undone.ToString();
+                work.type = work_type;
                 Publics.dbGlobal.WorksTB.Add(work);
+                Publics.dbGlobal.SaveChanges();
 
-                Publics.PriorityClass.NewPriorityAdded(priority);
+                Publics.PriorityClass.NewPriorityAdded(priority, work_type, work.Id);
                 try
                 {
                     Publics.dbGlobal.SaveChanges();
@@ -178,19 +243,19 @@ namespace PmLite
                     {
                         foreach (var validationError in entityValidationErrors.ValidationErrors)
                         {
-                           MessageBox.Show("Property: " + validationError.PropertyName + " Error: " + validationError.ErrorMessage);
+                            MessageBox.Show("Property: " + validationError.PropertyName + " Error: " + validationError.ErrorMessage);
                         }
                     }
                 }
-               
+
                 return work.Id;
-                
+
 
 
             }
         }
     }
 
-       
-        
+
+
 }

@@ -12,14 +12,11 @@ namespace PmLite
     using System;
     using System.Collections.Generic;
     
-    public partial class WorksTB
+    public partial class BaseValuesTB
     {
         public long Id { get; set; }
-        public Nullable<long> priority { get; set; }
-        public string context { get; set; }
-        public string status { get; set; }
+        public string title { get; set; }
         public string type { get; set; }
-        public Nullable<System.DateTime> date_created { get; set; }
-        public Nullable<System.DateTime> date_last_updated { get; set; }
+        public string value { get; set; }
     }
 }
