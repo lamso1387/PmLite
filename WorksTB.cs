@@ -21,5 +21,6 @@ namespace PmLite
         public string type { get; set; }
         public Nullable<System.DateTime> date_created { get; set; }
         public Nullable<System.DateTime> date_last_updated { get; set; }
+        public string responsible { get; set; }
     }
 }

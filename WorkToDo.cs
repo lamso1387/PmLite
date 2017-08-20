@@ -22,10 +22,11 @@ namespace PmLite
 
         private void btnAddNew_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(tbContext.Text) && !string.IsNullOrWhiteSpace(tbPrio.Text) && !string.IsNullOrWhiteSpace(cbType.Text))
+            if (!string.IsNullOrWhiteSpace(tbContext.Text) && !string.IsNullOrWhiteSpace(tbPrio.Text) && !string.IsNullOrWhiteSpace(cbType.Text)
+                && !string.IsNullOrWhiteSpace(cbResponsible.Text))
             {
-              long id=  Publics.WorksClass.AddNewWork(tbContext.Text, long.Parse(tbPrio.Text), cbType.Text);
-                Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1,  Publics.WorksClass.WorkStatus.Undone, cbType.Text, id);
+              long id=  Publics.WorksClass.AddNewWork(tbContext.Text, long.Parse(tbPrio.Text), cbType.Text, cbResponsible.Text);
+                Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1,  Publics.WorksClass.WorkStatus.Undone,cbFilterResponsible.Text, cbType.Text, id);
 
             }
 
@@ -33,17 +34,7 @@ namespace PmLite
         }
 
 
-        private void LoadWorkTypeCombo(ComboBox cb)
-        {
-            cb.Items.Clear();
-
-            var query = Publics.dbGlobal.BaseValuesTB.Where(x => x.type == Publics.BaseValueType.WorkType.ToString());
-
-            foreach (var item in query)
-            {
-                cb.Items.Add(item.title);
-            }
-        }
+        
 
         
         private void WorkToDo_Load(object sender, EventArgs e)
@@ -65,13 +56,19 @@ namespace PmLite
 
            
 
-            LoadWorkTypeCombo(cbType);
-            LoadWorkTypeCombo(cbEditType);
-            LoadWorkTypeCombo(cbTypeFilter);
+            Publics.LoadBaseValues(cbType, Publics.BaseValueType.WorkType);
+            Publics.LoadBaseValues(cbEditType, Publics.BaseValueType.WorkType);
+            Publics.LoadBaseValues(cbTypeFilter, Publics.BaseValueType.WorkType);
+
+            Publics.LoadBaseValues(cbResponsible, Publics.BaseValueType.Responsible);
+            Publics.LoadBaseValues(cbEditResponsible, Publics.BaseValueType.Responsible);
+            Publics.LoadBaseValues(cbFilterResponsible, Publics.BaseValueType.Responsible);
+
 
             cbTypeFilter.Items.Insert(0, "");
+            cbFilterResponsible.Items.Insert(0, "");
 
-            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbTypeFilter.Text);
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone,cbFilterResponsible.Text, cbTypeFilter.Text,null);
 
 
         }
@@ -97,6 +94,7 @@ namespace PmLite
                 gbEdit.Enabled = true;
                 tbContentEdit.Text = dataGridView1.SelectedRows[0].Cells["context"].Value.ToString();
                 tbPrio_edit.Text = dataGridView1.SelectedRows[0].Cells["priority"].Value.ToString();
+                cbEditResponsible.SelectedIndex = cbEditResponsible.FindStringExact(dataGridView1.SelectedRows[0].Cells["responsible"].Value.ToString());
                 cbEditType.SelectedIndex = cbEditType.FindStringExact(dataGridView1.SelectedRows[0].Cells["type"].Value.ToString());
                 
             }
@@ -111,7 +109,8 @@ namespace PmLite
 
         private void tbEdit_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(tbContentEdit.Text) && !string.IsNullOrWhiteSpace(tbPrio_edit.Text) && !string.IsNullOrWhiteSpace(cbEditType.Text))
+            if (!string.IsNullOrWhiteSpace(tbContentEdit.Text) && !string.IsNullOrWhiteSpace(tbPrio_edit.Text) && !string.IsNullOrWhiteSpace(cbEditType.Text)
+                && !string.IsNullOrWhiteSpace(cbEditResponsible.Text))
             {
                 long id = long.Parse(dataGridView1.SelectedRows[0].Cells["id"].Value.ToString());
                 long prio = long.Parse(tbPrio_edit.Text);
@@ -119,10 +118,11 @@ namespace PmLite
                 var edit = Publics.dbGlobal.WorksTB.Where(x => x.Id == id).First();
                 edit.context = tbContentEdit.Text;
                 edit.type = cbEditType.Text;
+                edit.responsible = cbEditResponsible.Text;
                 Publics.dbGlobal.SaveChanges();
                 Publics.PriorityClass.EditPriority(id, prio, cbEditType.Text);
 
-                Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1,  Publics.WorksClass.WorkStatus.Undone, cbEditType.Text, id);
+                Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1,  Publics.WorksClass.WorkStatus.Undone,cbFilterResponsible.Text, cbTypeFilter.Text, id);
             }
 
         }
@@ -136,7 +136,7 @@ namespace PmLite
         {
             if (cbTypeFilter.Text == "") return;
             Publics.PriorityClass.RemovePriorityGaps(cbTypeFilter.Text);
-            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbTypeFilter.Text);
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text,null);
         }
 
 
@@ -145,7 +145,7 @@ namespace PmLite
             if (dataGridView1.SelectedRows.Count > 0)
             {
                 Publics.WorksClass.DeleteWork(long.Parse(dataGridView1.SelectedRows[0].Cells["id"].Value.ToString()), dataGridView1.SelectedRows[0].Cells["type"].Value.ToString());
-                Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbTypeFilter.Text);
+                Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text,null);
             }
         }
 
@@ -156,12 +156,12 @@ namespace PmLite
 
         private void bindingNavigatorMoveNextItem_Click(object sender, EventArgs e)
         {
-            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbTypeFilter.Text);
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text,null);
         }
 
         private void bindingNavigatorMovePreviousItem_Click(object sender, EventArgs e)
         {
-            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbTypeFilter.Text);
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text,null);
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
@@ -171,25 +171,34 @@ namespace PmLite
 
         private void cbTypeFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbTypeFilter.Text);
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text,null);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             Publics.WorksClass.ChangeWorkStatus(dataGridView1, Publics.WorksClass.WorkStatus.Done);
-            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbTypeFilter.Text);
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text,null);
         }
 
         private void btnSeeClosed_Click(object sender, EventArgs e)
         {
-            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Done, cbTypeFilter.Text);
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Done, cbFilterResponsible.Text, cbTypeFilter.Text,null);
 
         }
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
             Publics.WorksClass.ChangeWorkStatus(dataGridView1, Publics.WorksClass.WorkStatus.Undone);
-            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Done, cbTypeFilter.Text);
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Done, cbFilterResponsible.Text, cbTypeFilter.Text,null);
+        }
+
+        private void tbResponsibleFilter_TextChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void cbFilterResponsible_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text, null);
         }
     }
 }

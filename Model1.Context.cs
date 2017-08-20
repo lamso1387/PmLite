@@ -25,7 +25,7 @@ namespace PmLite
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<WorksTB> WorksTB { get; set; }
         public virtual DbSet<BaseValuesTB> BaseValuesTB { get; set; }
+        public virtual DbSet<WorksTB> WorksTB { get; set; }
     }
 }

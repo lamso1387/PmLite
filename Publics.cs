@@ -33,8 +33,34 @@ namespace PmLite
         public enum BaseValueType
         {
             WorkType,
-            WorkStatus
+            WorkStatus,
+            Responsible
         }
+
+        public static void LoadBaseValues(ComboBox cb, Publics.BaseValueType base_value_type)
+        {
+            cb.Items.Clear();
+
+            var query = Publics.dbGlobal.BaseValuesTB.Where(x => x.type == base_value_type.ToString());
+
+            foreach (var item in query)
+            {
+                cb.Items.Add(item.title);
+            }
+        }
+
+        public static void LoadBaseValues(DataGridView dgv, Publics.BaseValueType base_value_type)
+        {
+            dgv.Rows.Clear();
+
+            var query = Publics.dbGlobal.BaseValuesTB.Where(x => x.type == base_value_type.ToString());
+
+            foreach (var item in query)
+            {
+                dgv.Rows.Add(item.Id, item.title);
+            }
+        }
+
         public class PriorityClass
         {
 
@@ -110,13 +136,14 @@ namespace PmLite
             {
                 long destination_id = 0;
                 var cur_type = dgv.SelectedRows[0].Cells["type"].Value.ToString();
+                var cur_responsible = dgv.SelectedRows[0].Cells["responsible"].Value.ToString();
 
                 if (WorksClass.TryGetDestinationWorkId(dgv, direction, cur_type, out destination_id))
                 {
 
                     var cur_id = long.Parse(dgv.SelectedRows[0].Cells["id"].Value.ToString());
                     ReplacePriorirty(cur_id, destination_id);
-                    Publics.WorksClass.LoadDataGridViewWorkList(dgv, Publics.WorksClass.WorkStatus.Undone, cur_type, cur_id);
+                    Publics.WorksClass.LoadDataGridViewWorkList(dgv, Publics.WorksClass.WorkStatus.Undone, null, cur_type, cur_id);
                 }
                 else MessageBox.Show("تغییر ناممکن");
             }
@@ -140,11 +167,13 @@ namespace PmLite
                 Done
             }
 
-            public static void LoadDataGridViewWorkList(DataGridView dgv, WorkStatus work_status, string work_type = null, long? work_id_to_select = null)
+            public static void LoadDataGridViewWorkList(DataGridView dgv, WorkStatus work_status, string responsible ,string work_type , long? work_id_to_select)
             {
                 dgv.Rows.Clear();
                 int? index_to_select = null;
-                var query = Publics.dbGlobal.WorksTB.Where(x => x.status == work_status.ToString()).Where(x => (work_type == null || work_type == "") ? true : x.type == work_type).OrderBy(x => x.priority).AsQueryable();
+                var query = Publics.dbGlobal.WorksTB.Where(x => x.status == work_status.ToString()).Where(x => (work_type == null || work_type == "") ? true : x.type == work_type)
+                    .Where(x=>(responsible==null || responsible =="") ? true : x.responsible==responsible)
+                    .OrderBy(x => x.priority).AsQueryable();
 
                 dgv.Tag = query.Count();
 
@@ -154,7 +183,7 @@ namespace PmLite
 
                 foreach (var item in query)
                 {
-                    int index = dgv.Rows.Add(item.Id, item.priority, item.context, item.type);
+                    int index = dgv.Rows.Add(item.Id, item.priority, item.context,item.responsible, item.type);
                     if (item.Id == work_id_to_select) index_to_select = index;
                 }
                 if (index_to_select != null) dgv.Rows[(int)index_to_select].Selected = true;
@@ -221,7 +250,7 @@ namespace PmLite
 
             }
 
-            public static long AddNewWork(string tbContext, long priority, string work_type)
+            public static long AddNewWork(string tbContext, long priority, string work_type, string responsible)
             {
                 WorksTB work = new WorksTB();
                 work.context = tbContext;
@@ -229,6 +258,7 @@ namespace PmLite
                 work.date_created = DateTime.Now;
                 work.status = WorkStatus.Undone.ToString();
                 work.type = work_type;
+                work.responsible = responsible;
                 Publics.dbGlobal.WorksTB.Add(work);
                 Publics.dbGlobal.SaveChanges();
 

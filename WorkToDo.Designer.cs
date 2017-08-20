@@ -32,9 +32,13 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WorkToDo));
             this.pnlSearch = new System.Windows.Forms.Panel();
             this.gbTypeFilters = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cbFilterResponsible = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.cbTypeFilter = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cbResponsible = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -49,6 +53,7 @@
             this.btnPrint = new System.Windows.Forms.Button();
             this.btnReorderPrio = new System.Windows.Forms.Button();
             this.gbEdit = new System.Windows.Forms.GroupBox();
+            this.cbEditResponsible = new System.Windows.Forms.ComboBox();
             this.cbEditType = new System.Windows.Forms.ComboBox();
             this.tbContentEdit = new System.Windows.Forms.TextBox();
             this.tbPrio_edit = new System.Windows.Forms.TextBox();
@@ -60,7 +65,9 @@
             this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.priority = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.context = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.responsible = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.type = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnExcel = new System.Windows.Forms.Button();
             this.pnlSearch.SuspendLayout();
             this.gbTypeFilters.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -84,15 +91,37 @@
             // 
             // gbTypeFilters
             // 
+            this.gbTypeFilters.BackColor = System.Drawing.Color.Thistle;
+            this.gbTypeFilters.Controls.Add(this.label6);
+            this.gbTypeFilters.Controls.Add(this.cbFilterResponsible);
             this.gbTypeFilters.Controls.Add(this.label4);
             this.gbTypeFilters.Controls.Add(this.cbTypeFilter);
-            this.gbTypeFilters.Location = new System.Drawing.Point(429, 6);
+            this.gbTypeFilters.Location = new System.Drawing.Point(14, 6);
             this.gbTypeFilters.Name = "gbTypeFilters";
             this.gbTypeFilters.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.gbTypeFilters.Size = new System.Drawing.Size(190, 122);
             this.gbTypeFilters.TabIndex = 4;
             this.gbTypeFilters.TabStop = false;
             this.gbTypeFilters.Text = "فیلتر";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(122, 76);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(43, 23);
+            this.label6.TabIndex = 8;
+            this.label6.Text = "مسئول";
+            // 
+            // cbFilterResponsible
+            // 
+            this.cbFilterResponsible.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbFilterResponsible.FormattingEnabled = true;
+            this.cbFilterResponsible.Location = new System.Drawing.Point(6, 73);
+            this.cbFilterResponsible.Name = "cbFilterResponsible";
+            this.cbFilterResponsible.Size = new System.Drawing.Size(109, 31);
+            this.cbFilterResponsible.TabIndex = 8;
+            this.cbFilterResponsible.SelectedIndexChanged += new System.EventHandler(this.cbFilterResponsible_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -115,6 +144,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.BackColor = System.Drawing.Color.Thistle;
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.cbResponsible);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
@@ -122,18 +154,36 @@
             this.groupBox1.Controls.Add(this.tbContext);
             this.groupBox1.Controls.Add(this.tbPrio);
             this.groupBox1.Controls.Add(this.btnAddNew);
-            this.groupBox1.Location = new System.Drawing.Point(725, 6);
+            this.groupBox1.Location = new System.Drawing.Point(598, 6);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.groupBox1.Size = new System.Drawing.Size(672, 122);
+            this.groupBox1.Size = new System.Drawing.Size(799, 122);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "افزودن مورد جدید";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(259, 90);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(43, 23);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "مسئول";
+            // 
+            // cbResponsible
+            // 
+            this.cbResponsible.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbResponsible.FormattingEnabled = true;
+            this.cbResponsible.Location = new System.Drawing.Point(128, 87);
+            this.cbResponsible.Name = "cbResponsible";
+            this.cbResponsible.Size = new System.Drawing.Size(109, 31);
+            this.cbResponsible.TabIndex = 7;
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(102, 24);
+            this.label3.Location = new System.Drawing.Point(210, 25);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(25, 23);
             this.label3.TabIndex = 6;
@@ -142,7 +192,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(168, 24);
+            this.label2.Location = new System.Drawing.Point(276, 19);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(39, 23);
             this.label2.TabIndex = 5;
@@ -151,7 +201,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(630, 26);
+            this.label1.Location = new System.Drawing.Point(738, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(36, 23);
             this.label1.TabIndex = 4;
@@ -161,14 +211,14 @@
             // 
             this.cbType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbType.FormattingEnabled = true;
-            this.cbType.Location = new System.Drawing.Point(20, 48);
+            this.cbType.Location = new System.Drawing.Point(128, 49);
             this.cbType.Name = "cbType";
             this.cbType.Size = new System.Drawing.Size(109, 31);
             this.cbType.TabIndex = 3;
             // 
             // tbContext
             // 
-            this.tbContext.Location = new System.Drawing.Point(230, 50);
+            this.tbContext.Location = new System.Drawing.Point(338, 51);
             this.tbContext.Multiline = true;
             this.tbContext.Name = "tbContext";
             this.tbContext.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -177,7 +227,7 @@
             // 
             // tbPrio
             // 
-            this.tbPrio.Location = new System.Drawing.Point(151, 48);
+            this.tbPrio.Location = new System.Drawing.Point(259, 49);
             this.tbPrio.Name = "tbPrio";
             this.tbPrio.Size = new System.Drawing.Size(56, 30);
             this.tbPrio.TabIndex = 1;
@@ -185,9 +235,9 @@
             // 
             // btnAddNew
             // 
-            this.btnAddNew.Location = new System.Drawing.Point(20, 85);
+            this.btnAddNew.Location = new System.Drawing.Point(6, 87);
             this.btnAddNew.Name = "btnAddNew";
-            this.btnAddNew.Size = new System.Drawing.Size(109, 28);
+            this.btnAddNew.Size = new System.Drawing.Size(109, 31);
             this.btnAddNew.TabIndex = 2;
             this.btnAddNew.Text = "افزودن";
             this.btnAddNew.UseVisualStyleBackColor = true;
@@ -195,6 +245,7 @@
             // 
             // pnlButtons
             // 
+            this.pnlButtons.Controls.Add(this.btnExcel);
             this.pnlButtons.Controls.Add(this.btnOpen);
             this.pnlButtons.Controls.Add(this.btnSeeClosed);
             this.pnlButtons.Controls.Add(this.btnClose);
@@ -204,16 +255,16 @@
             this.pnlButtons.Controls.Add(this.pbDown);
             this.pnlButtons.Controls.Add(this.pbUp);
             this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlButtons.Location = new System.Drawing.Point(0, 676);
+            this.pnlButtons.Location = new System.Drawing.Point(0, 660);
             this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(1400, 124);
+            this.pnlButtons.Size = new System.Drawing.Size(1400, 140);
             this.pnlButtons.TabIndex = 1;
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(29, 13);
+            this.btnOpen.Location = new System.Drawing.Point(29, 88);
             this.btnOpen.Name = "btnOpen";
-            this.btnOpen.Size = new System.Drawing.Size(75, 29);
+            this.btnOpen.Size = new System.Drawing.Size(119, 29);
             this.btnOpen.TabIndex = 10;
             this.btnOpen.Text = "باز کردن";
             this.btnOpen.UseVisualStyleBackColor = true;
@@ -221,7 +272,7 @@
             // 
             // btnSeeClosed
             // 
-            this.btnSeeClosed.Location = new System.Drawing.Point(121, 13);
+            this.btnSeeClosed.Location = new System.Drawing.Point(29, 52);
             this.btnSeeClosed.Name = "btnSeeClosed";
             this.btnSeeClosed.Size = new System.Drawing.Size(119, 29);
             this.btnSeeClosed.TabIndex = 9;
@@ -231,9 +282,9 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(258, 13);
+            this.btnClose.Location = new System.Drawing.Point(29, 13);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(55, 29);
+            this.btnClose.Size = new System.Drawing.Size(119, 29);
             this.btnClose.TabIndex = 8;
             this.btnClose.Text = "بستن";
             this.btnClose.UseVisualStyleBackColor = true;
@@ -241,7 +292,7 @@
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(319, 13);
+            this.btnPrint.Location = new System.Drawing.Point(167, 13);
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Size = new System.Drawing.Size(59, 29);
             this.btnPrint.TabIndex = 7;
@@ -251,7 +302,7 @@
             // 
             // btnReorderPrio
             // 
-            this.btnReorderPrio.Location = new System.Drawing.Point(388, 13);
+            this.btnReorderPrio.Location = new System.Drawing.Point(236, 13);
             this.btnReorderPrio.Name = "btnReorderPrio";
             this.btnReorderPrio.Size = new System.Drawing.Size(148, 29);
             this.btnReorderPrio.TabIndex = 6;
@@ -261,30 +312,41 @@
             // 
             // gbEdit
             // 
+            this.gbEdit.BackColor = System.Drawing.Color.Thistle;
+            this.gbEdit.Controls.Add(this.cbEditResponsible);
             this.gbEdit.Controls.Add(this.cbEditType);
             this.gbEdit.Controls.Add(this.tbContentEdit);
             this.gbEdit.Controls.Add(this.tbPrio_edit);
             this.gbEdit.Controls.Add(this.tbEdit);
-            this.gbEdit.Location = new System.Drawing.Point(542, 3);
+            this.gbEdit.Location = new System.Drawing.Point(443, 11);
             this.gbEdit.Name = "gbEdit";
             this.gbEdit.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.gbEdit.Size = new System.Drawing.Size(668, 119);
+            this.gbEdit.Size = new System.Drawing.Size(767, 119);
             this.gbEdit.TabIndex = 4;
             this.gbEdit.TabStop = false;
             this.gbEdit.Text = "ویرایش";
+            // 
+            // cbEditResponsible
+            // 
+            this.cbEditResponsible.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbEditResponsible.FormattingEnabled = true;
+            this.cbEditResponsible.Location = new System.Drawing.Point(119, 85);
+            this.cbEditResponsible.Name = "cbEditResponsible";
+            this.cbEditResponsible.Size = new System.Drawing.Size(109, 31);
+            this.cbEditResponsible.TabIndex = 5;
             // 
             // cbEditType
             // 
             this.cbEditType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbEditType.FormattingEnabled = true;
-            this.cbEditType.Location = new System.Drawing.Point(31, 49);
+            this.cbEditType.Location = new System.Drawing.Point(119, 49);
             this.cbEditType.Name = "cbEditType";
             this.cbEditType.Size = new System.Drawing.Size(109, 31);
             this.cbEditType.TabIndex = 4;
             // 
             // tbContentEdit
             // 
-            this.tbContentEdit.Location = new System.Drawing.Point(218, 50);
+            this.tbContentEdit.Location = new System.Drawing.Point(317, 49);
             this.tbContentEdit.Multiline = true;
             this.tbContentEdit.Name = "tbContentEdit";
             this.tbContentEdit.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -293,7 +355,7 @@
             // 
             // tbPrio_edit
             // 
-            this.tbPrio_edit.Location = new System.Drawing.Point(146, 50);
+            this.tbPrio_edit.Location = new System.Drawing.Point(245, 49);
             this.tbPrio_edit.Name = "tbPrio_edit";
             this.tbPrio_edit.Size = new System.Drawing.Size(56, 30);
             this.tbPrio_edit.TabIndex = 1;
@@ -342,13 +404,14 @@
             this.id,
             this.priority,
             this.context,
+            this.responsible,
             this.type});
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 138);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(10);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.dataGridView1.Size = new System.Drawing.Size(1400, 538);
+            this.dataGridView1.Size = new System.Drawing.Size(1400, 522);
             this.dataGridView1.TabIndex = 8;
             this.dataGridView1.SelectionChanged += new System.EventHandler(this.dataGridView1_SelectionChanged);
             this.dataGridView1.EnabledChanged += new System.EventHandler(this.dataGridView1_EnabledChanged);
@@ -370,11 +433,25 @@
             this.context.HeaderText = "عنوان";
             this.context.Name = "context";
             // 
+            // responsible
+            // 
+            this.responsible.HeaderText = "مسئول";
+            this.responsible.Name = "responsible";
+            // 
             // type
             // 
             this.type.HeaderText = "نوع";
             this.type.Name = "type";
             this.type.Width = 200;
+            // 
+            // btnExcel
+            // 
+            this.btnExcel.Location = new System.Drawing.Point(167, 52);
+            this.btnExcel.Name = "btnExcel";
+            this.btnExcel.Size = new System.Drawing.Size(59, 29);
+            this.btnExcel.TabIndex = 11;
+            this.btnExcel.Text = "اکسل";
+            this.btnExcel.UseVisualStyleBackColor = true;
             // 
             // WorkToDo
             // 
@@ -433,9 +510,16 @@
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnOpen;
         private System.Windows.Forms.Button btnSeeClosed;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox cbResponsible;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
         private System.Windows.Forms.DataGridViewTextBoxColumn priority;
         private System.Windows.Forms.DataGridViewTextBoxColumn context;
+        private System.Windows.Forms.DataGridViewTextBoxColumn responsible;
         private System.Windows.Forms.DataGridViewTextBoxColumn type;
+        private System.Windows.Forms.ComboBox cbEditResponsible;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cbFilterResponsible;
+        private System.Windows.Forms.Button btnExcel;
     }
 }
