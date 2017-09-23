@@ -17,6 +17,14 @@ namespace PmLite
         public Form1()
         {
             InitializeComponent();
+            using (SRL.Database dbsrl = new SRL.Database())
+            {
+                string db_path = System.AppDomain.CurrentDomain.BaseDirectory + "MyDatabase.sqlite";
+                dbsrl.UpdateConnectionString(@"metadata=res://*/Model2.csdl|res://*/Model2.ssdl|res://*/Model2.msl;provider=System.Data.SQLite.EF6;provider connection string='data source=" + db_path + "'", "MyDatabaseEntities", this);
+                                              
+            }
+
+
 
         }
 
@@ -25,28 +33,40 @@ namespace PmLite
             this.WindowState = FormWindowState.Maximized;
             this.AutoScroll = true;
 
-
-        
-
+            this.Text = "PmLite 2017 v" + SRL.Security.GetAppVersion().ToString() + " By SRL";
+            
+            MigrateDatabase();
 
         }
 
-      
+        private void MigrateDatabase()
+        {
+            Dictionary<string, string> migration_version_query = new Dictionary<string, string>();
+
+           // migration_version_query["3"] = "ALTER TABLE WorksTB ADD progress_status nvarchar(50)";
+
+            Publics.srlsetting.MigrateDatabase(migration_version_query);
+        }
 
         private void miWorkToDo_Click(object sender, EventArgs e)
         {
-            Publics.srltools.AddChildToParentControlsZoomAndAliagn(pnlMain, new WorkToDo(),(decimal)0.9);
+            SRL.WinTools.AddChildToParentControlsZoomAndAliagn(pnlMain, new WorkToDo(), (decimal)0.9);
         }
 
         private void miManage_Click(object sender, EventArgs e)
         {
-            Publics.srltools.AddChildToParentControlsZoomAndAliagn(pnlMain, new Manage());
+            SRL.WinTools.AddChildToParentControlsZoomAndAliagn(pnlMain, new Manage());
         }
 
         private void pnlMain_Paint(object sender, PaintEventArgs e)
         {
 
         }
+
+        private void miAbout_Click(object sender, EventArgs e)
+        {
+            SRL.WinTools.AddChildToParentControls(pnlMain, new About());
+        }
     }
-        
+
 }

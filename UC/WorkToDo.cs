@@ -18,6 +18,7 @@ namespace PmLite
         public WorkToDo()
         {
             InitializeComponent();
+          
         }
 
         private void btnAddNew_Click(object sender, EventArgs e)
@@ -47,9 +48,9 @@ namespace PmLite
             validation.ControlValidation(cbType, SRL.WinTools.UserControlValidation.ErrorTypes.NotNull, ErrorIconAlignment.MiddleLeft);
             validation.ControlValidation(tbContentEdit, SRL.WinTools.UserControlValidation.ErrorTypes.NotNull, ErrorIconAlignment.MiddleLeft);
 
-            Publics.srldgvui.StyleDatagridviewDefault(dataGridView1);
+            SRL.WinUI.DatagridviewClass.StyleDatagridviewDefault(dataGridView1);
             gbEdit.Enabled = dataGridView1.SelectedRows.Count > 0 ? true : false;
-            foreach (var item in Publics.srlchildparent.GetAllChildrenControls(this).OfType<PictureBox>())
+            foreach (var item in SRL.ChildParent.GetAllChildrenControls(this).OfType<PictureBox>())
             {
                 Publics.srlpicturhover.PictureBoxOnlyHover(item, Cursors.Hand);
             }
@@ -92,10 +93,13 @@ namespace PmLite
             if (dataGridView1.SelectedRows.Count > 0)
             {
                 gbEdit.Enabled = true;
-                tbContentEdit.Text = dataGridView1.SelectedRows[0].Cells["context"].Value.ToString();
-                tbPrio_edit.Text = dataGridView1.SelectedRows[0].Cells["priority"].Value.ToString();
-                cbEditResponsible.SelectedIndex = cbEditResponsible.FindStringExact(dataGridView1.SelectedRows[0].Cells["responsible"].Value.ToString());
-                cbEditType.SelectedIndex = cbEditType.FindStringExact(dataGridView1.SelectedRows[0].Cells["type"].Value.ToString());
+                var selected_row = dataGridView1.SelectedRows[0];
+                tbContentEdit.Text = selected_row.Cells["context"].Value.ToString();
+                tbPrio_edit.Text = selected_row.Cells["priority"].Value.ToString();
+                tbProggreaaStatus.Text = selected_row.Cells["progress_status"].Value == null ? "" : selected_row.Cells["progress_status"].Value.ToString();
+                tbEditProgress.Text= selected_row.Cells["progress"].Value == null ? "0" : selected_row.Cells["progress"].Value.ToString();
+                cbEditResponsible.SelectedIndex = cbEditResponsible.FindStringExact(selected_row.Cells["responsible"].Value.ToString());
+                cbEditType.SelectedIndex = cbEditType.FindStringExact(selected_row.Cells["type"].Value.ToString());
                 
             }
             else
@@ -119,6 +123,8 @@ namespace PmLite
                 edit.context = tbContentEdit.Text;
                 edit.type = cbEditType.Text;
                 edit.responsible = cbEditResponsible.Text;
+                edit.progress = int.Parse(tbEditProgress.Text);
+                edit.progress_status = tbProggreaaStatus.Text;
                 Publics.dbGlobal.SaveChanges();
                 Publics.PriorityClass.EditPriority(id, prio, cbEditType.Text);
 
@@ -199,6 +205,36 @@ namespace PmLite
         private void cbFilterResponsible_SelectedIndexChanged(object sender, EventArgs e)
         {
             Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text, null);
+        }
+
+        private void btnExcel_Click(object sender, EventArgs e)
+        {
+            using (var excel = new SRL.ExcelManagement(btnExcel))
+            {
+                string name = "workList" +
+                    DateTime.Now.ToString("yyyyMMdd")
+               + ".xls";
+                  excel.ExportToExcell(dataGridView1, 2000, Path.Combine(SRL.FileManagement.GetDesktopDirectory(), name));
+            }
+        }
+
+        private void btnDelWork_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count > 0)
+            {
+               if(Publics.WorksClass.DeleteWork(long.Parse(dataGridView1.SelectedRows[0].Cells["id"].Value.ToString()), dataGridView1.SelectedRows[0].Cells["type"].Value.ToString()))
+                Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text, null);
+            }
+        }
+
+        private void btnSeeOpens_Click(object sender, EventArgs e)
+        {
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.Undone, cbFilterResponsible.Text, cbTypeFilter.Text, null);
+        }
+
+        private void btnSeeAll_Click(object sender, EventArgs e)
+        {
+            Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1, Publics.WorksClass.WorkStatus.All, cbFilterResponsible.Text, cbTypeFilter.Text, null);
         }
     }
 }

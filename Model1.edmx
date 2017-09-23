@@ -14,6 +14,14 @@
           <Property Name="type" Type="nvarchar" MaxLength="50" />
           <Property Name="value" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="SettingTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="key" Type="nvarchar" MaxLength="50" />
+          <Property Name="value" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="WorksTB">
           <Key>
             <PropertyRef Name="Id" />
@@ -26,9 +34,12 @@
           <Property Name="date_created" Type="datetime" />
           <Property Name="date_last_updated" Type="datetime" />
           <Property Name="responsible" Type="nvarchar" MaxLength="50" />
+          <Property Name="progress" Type="int" />
+          <Property Name="progress_status" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityContainer Name="Database1ModelStoreContainer">
           <EntitySet Name="BaseValuesTB" EntityType="Self.BaseValuesTB" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SettingTB" EntityType="Self.SettingTB" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WorksTB" EntityType="Self.WorksTB" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -37,6 +48,7 @@
       <Schema Namespace="Database1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="Database1Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="BaseValuesTB" EntityType="Database1Model.BaseValuesTB" />
+          <EntitySet Name="SettingTB" EntityType="Database1Model.SettingTB" />
           <EntitySet Name="WorksTB" EntityType="Database1Model.WorksTB" />
         </EntityContainer>
         <EntityType Name="BaseValuesTB">
@@ -46,6 +58,14 @@
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="value" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SettingTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="key" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="value" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="WorksTB">
@@ -60,6 +80,8 @@
           <Property Name="date_created" Type="DateTime" Precision="3" />
           <Property Name="date_last_updated" Type="DateTime" Precision="3" />
           <Property Name="responsible" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="progress" Type="Int32" />
+          <Property Name="progress_status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -77,9 +99,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="SettingTB">
+            <EntityTypeMapping TypeName="Database1Model.SettingTB">
+              <MappingFragment StoreEntitySet="SettingTB">
+                <ScalarProperty Name="value" ColumnName="value" />
+                <ScalarProperty Name="key" ColumnName="key" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="WorksTB">
             <EntityTypeMapping TypeName="Database1Model.WorksTB">
               <MappingFragment StoreEntitySet="WorksTB">
+                <ScalarProperty Name="progress_status" ColumnName="progress_status" />
+                <ScalarProperty Name="progress" ColumnName="progress" />
                 <ScalarProperty Name="responsible" ColumnName="responsible" />
                 <ScalarProperty Name="date_last_updated" ColumnName="date_last_updated" />
                 <ScalarProperty Name="date_created" ColumnName="date_created" />

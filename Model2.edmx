@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MyDatabaseModel.Store" Provider="System.Data.SQLite.EF6" ProviderManifestToken="data source=D:\Projects\PmLite\PmLite\MyDatabase.sqlite" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BaseValuesTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="type" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="value" Type="nvarchar" MaxLength="2147483647" />
+        </EntityType>
+        <EntityType Name="SettingTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="key" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="value" Type="nvarchar" MaxLength="2147483647" />
+        </EntityType>
+        <EntityType Name="WorksTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="priority" Type="integer" />
+          <Property Name="context" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="status" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="type" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="date_created" Type="datetime" />
+          <Property Name="date_last_updated" Type="datetime" />
+          <Property Name="responsible" Type="nvarchar" MaxLength="2147483647" />
+          <Property Name="progress" Type="integer" />
+          <Property Name="progress_status" Type="nvarchar" MaxLength="2147483647" />
+        </EntityType>
+        <EntityContainer Name="MyDatabaseModelStoreContainer">
+          <EntitySet Name="BaseValuesTB" EntityType="Self.BaseValuesTB" store:Type="Tables" />
+          <EntitySet Name="SettingTB" EntityType="Self.SettingTB" store:Type="Tables" />
+          <EntitySet Name="WorksTB" EntityType="Self.WorksTB" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MyDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BaseValuesTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="type" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="value" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SettingTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="key" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="value" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="MyDatabaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BaseValuesTB" EntityType="Self.BaseValuesTB" />
+          <EntitySet Name="SettingTB" EntityType="Self.SettingTB" />
+          <EntitySet Name="WorksTB" EntityType="MyDatabaseModel.WorksTB" />
+        </EntityContainer>
+        <EntityType Name="WorksTB">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="priority" Type="Int64" />
+          <Property Name="context" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="type" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="date_created" Type="DateTime" />
+          <Property Name="date_last_updated" Type="DateTime" />
+          <Property Name="responsible" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+          <Property Name="progress" Type="Int64" />
+          <Property Name="progress_status" Type="String" MaxLength="2147483647" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MyDatabaseModelStoreContainer" CdmEntityContainer="MyDatabaseEntities">
+          <EntitySetMapping Name="BaseValuesTB">
+            <EntityTypeMapping TypeName="MyDatabaseModel.BaseValuesTB">
+              <MappingFragment StoreEntitySet="BaseValuesTB">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="value" ColumnName="value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SettingTB">
+            <EntityTypeMapping TypeName="MyDatabaseModel.SettingTB">
+              <MappingFragment StoreEntitySet="SettingTB">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="key" ColumnName="key" />
+                <ScalarProperty Name="value" ColumnName="value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WorksTB">
+            <EntityTypeMapping TypeName="MyDatabaseModel.WorksTB">
+              <MappingFragment StoreEntitySet="WorksTB">
+                <ScalarProperty Name="progress_status" ColumnName="progress_status" />
+                <ScalarProperty Name="progress" ColumnName="progress" />
+                <ScalarProperty Name="responsible" ColumnName="responsible" />
+                <ScalarProperty Name="date_last_updated" ColumnName="date_last_updated" />
+                <ScalarProperty Name="date_created" ColumnName="date_created" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="context" ColumnName="context" />
+                <ScalarProperty Name="priority" ColumnName="priority" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

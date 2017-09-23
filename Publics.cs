@@ -10,19 +10,10 @@ namespace PmLite
 {
     public class Publics
     {
-        public static Database1Entities dbGlobal = new Database1Entities();
-        public static SRL.WinUI srlwinui = new SRL.WinUI();
-        public static SRL.WinUI.FormClass srlform = new SRL.WinUI.FormClass();
-        public static SRL.WinTools srltools = new SRL.WinTools();
-        public static SRL.FileManagement srlfile = new SRL.FileManagement();
-        public static SRL.DateTimeLanguageClass srldatelanguage = new SRL.DateTimeLanguageClass();
-        public static SRL.Convertor srlconvert = new SRL.Convertor();
-
-        public static SRL.WinUI.DatagridviewClass srldgvui = new SRL.WinUI.DatagridviewClass();
+        //public static Database1Entities dbGlobal = new Database1Entities();
+        public static MyDatabaseEntities dbGlobal = new MyDatabaseEntities();
         public static SRL.WinUI.PictureBoxClass.PictureBoxHover srlpicturhover = new SRL.WinUI.PictureBoxClass.PictureBoxHover();
-        public static SRL.ChildParent srlchildparent = new SRL.ChildParent();
-        public static string database_name = Properties.Settings.Default.database_name;
-        public static string database_log_name = Properties.Settings.Default.database_log_name;
+        public static SRL.SettingClass<SettingTB> srlsetting = new SRL.SettingClass<SettingTB>(dbGlobal);
 
 
         public enum ChangeDirectuon
@@ -164,16 +155,17 @@ namespace PmLite
             public enum WorkStatus
             {
                 Undone,
-                Done
+                Done,
+                All
             }
 
             public static void LoadDataGridViewWorkList(DataGridView dgv, WorkStatus work_status, string responsible ,string work_type , long? work_id_to_select)
             {
                 dgv.Rows.Clear();
                 int? index_to_select = null;
-                var query = Publics.dbGlobal.WorksTB.Where(x => x.status == work_status.ToString()).Where(x => (work_type == null || work_type == "") ? true : x.type == work_type)
-                    .Where(x=>(responsible==null || responsible =="") ? true : x.responsible==responsible)
-                    .OrderBy(x => x.priority).AsQueryable();
+                var query = Publics.dbGlobal.WorksTB.Where(x =>work_status==WorkStatus.All? true: x.status == work_status.ToString()).Where(x => (work_type == null || work_type == "") ? true : x.type == work_type)
+                    .Where(x => (responsible == null || responsible == "") ? true : x.responsible == responsible)
+                    .OrderBy(x => x.priority).AsQueryable();//.Select(x=>new {x.context,x.Id,x.priority,x.progress,x.responsible,x.type });
 
                 dgv.Tag = query.Count();
 
@@ -181,11 +173,14 @@ namespace PmLite
                 //if (count != null) query = query.Take((int)count);
 
 
+                
                 foreach (var item in query)
                 {
-                    int index = dgv.Rows.Add(item.Id, item.priority, item.context,item.responsible, item.type);
+                    int index = dgv.Rows.Add(item.Id, item.priority, item.context,item.responsible,item.progress,item.progress_status, item.type);
                     if (item.Id == work_id_to_select) index_to_select = index;
                 }
+
+
                 if (index_to_select != null) dgv.Rows[(int)index_to_select].Selected = true;
 
                 var en = dgv.Enabled;
@@ -194,15 +189,19 @@ namespace PmLite
 
             }
 
-            public static void DeleteWork(long id_to_delete, string work_type)
+            public static bool DeleteWork(long id_to_delete, string work_type)
             {
                 var del = Publics.dbGlobal.WorksTB.Where(x => x.Id == id_to_delete).First();
+                if(del.status != Publics.WorksClass.WorkStatus.Done.ToString())
+                {
+                    SRL.MessageBoxForm2.Show("فقط کار بسته شده قابل حذف است");
+                    return false;
+                }
                 var prio = del.priority;
                 Publics.dbGlobal.WorksTB.Remove(del);
                 Publics.dbGlobal.SaveChanges();
                 PriorityClass.AddToPrioriries((long)prio,null, work_type, -1,null);
-
-
+                return true;
             }
             public static bool TryGetDestinationWorkId(DataGridView dgv, ChangeDirectuon direction, string work_type, out long destination_id)
             {
@@ -258,6 +257,7 @@ namespace PmLite
                 work.date_created = DateTime.Now;
                 work.status = WorkStatus.Undone.ToString();
                 work.type = work_type;
+                work.progress = 0;
                 work.responsible = responsible;
                 Publics.dbGlobal.WorksTB.Add(work);
                 Publics.dbGlobal.SaveChanges();

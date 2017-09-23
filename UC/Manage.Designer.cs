@@ -29,41 +29,58 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnDelType = new System.Windows.Forms.Button();
             this.btnAddType = new System.Windows.Forms.Button();
             this.tbType = new System.Windows.Forms.TextBox();
             this.dgvType = new System.Windows.Forms.DataGridView();
             this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.title = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnDelRes = new System.Windows.Forms.Button();
             this.btnAddResponsible = new System.Windows.Forms.Button();
             this.tbresponsible = new System.Windows.Forms.TextBox();
             this.dgvResponsible = new System.Windows.Forms.DataGridView();
             this.responsible_id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.responsible_title = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnSeeCS = new System.Windows.Forms.Button();
+            this.btnDeleteAllWork = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvType)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResponsible)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnDelType);
             this.groupBox1.Controls.Add(this.btnAddType);
             this.groupBox1.Controls.Add(this.tbType);
             this.groupBox1.Controls.Add(this.dgvType);
-            this.groupBox1.Location = new System.Drawing.Point(16, 15);
+            this.groupBox1.Location = new System.Drawing.Point(87, 53);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.groupBox1.Size = new System.Drawing.Size(224, 400);
+            this.groupBox1.Size = new System.Drawing.Size(224, 449);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "نوع کار";
+            // 
+            // btnDelType
+            // 
+            this.btnDelType.Location = new System.Drawing.Point(57, 407);
+            this.btnDelType.Name = "btnDelType";
+            this.btnDelType.Size = new System.Drawing.Size(100, 35);
+            this.btnDelType.TabIndex = 12;
+            this.btnDelType.Text = "حذف";
+            this.btnDelType.UseVisualStyleBackColor = true;
+            this.btnDelType.Click += new System.EventHandler(this.btnDelType_Click);
             // 
             // btnAddType
             // 
             this.btnAddType.Location = new System.Drawing.Point(57, 367);
             this.btnAddType.Name = "btnAddType";
-            this.btnAddType.Size = new System.Drawing.Size(100, 27);
+            this.btnAddType.Size = new System.Drawing.Size(100, 35);
             this.btnAddType.TabIndex = 11;
             this.btnAddType.Text = "افزودن";
             this.btnAddType.UseVisualStyleBackColor = true;
@@ -104,22 +121,33 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btnDelRes);
             this.groupBox2.Controls.Add(this.btnAddResponsible);
             this.groupBox2.Controls.Add(this.tbresponsible);
             this.groupBox2.Controls.Add(this.dgvResponsible);
-            this.groupBox2.Location = new System.Drawing.Point(267, 15);
+            this.groupBox2.Location = new System.Drawing.Point(338, 53);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.groupBox2.Size = new System.Drawing.Size(224, 400);
+            this.groupBox2.Size = new System.Drawing.Size(224, 449);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "افراد";
+            // 
+            // btnDelRes
+            // 
+            this.btnDelRes.Location = new System.Drawing.Point(57, 407);
+            this.btnDelRes.Name = "btnDelRes";
+            this.btnDelRes.Size = new System.Drawing.Size(100, 35);
+            this.btnDelRes.TabIndex = 12;
+            this.btnDelRes.Text = "حذف";
+            this.btnDelRes.UseVisualStyleBackColor = true;
+            this.btnDelRes.Click += new System.EventHandler(this.btnDelRes_Click);
             // 
             // btnAddResponsible
             // 
             this.btnAddResponsible.Location = new System.Drawing.Point(57, 367);
             this.btnAddResponsible.Name = "btnAddResponsible";
-            this.btnAddResponsible.Size = new System.Drawing.Size(100, 27);
+            this.btnAddResponsible.Size = new System.Drawing.Size(100, 35);
             this.btnAddResponsible.TabIndex = 11;
             this.btnAddResponsible.Text = "افزودن";
             this.btnAddResponsible.UseVisualStyleBackColor = true;
@@ -159,10 +187,43 @@
             this.responsible_title.HeaderText = "عنوان";
             this.responsible_title.Name = "responsible_title";
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.btnSeeCS);
+            this.groupBox3.Controls.Add(this.btnDeleteAllWork);
+            this.groupBox3.Location = new System.Drawing.Point(577, 53);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.groupBox3.Size = new System.Drawing.Size(224, 449);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "تنظیمات";
+            // 
+            // btnSeeCS
+            // 
+            this.btnSeeCS.Location = new System.Drawing.Point(39, 88);
+            this.btnSeeCS.Name = "btnSeeCS";
+            this.btnSeeCS.Size = new System.Drawing.Size(179, 33);
+            this.btnSeeCS.TabIndex = 13;
+            this.btnSeeCS.Text = "مشاهده مشخصات پایگاه داده";
+            this.btnSeeCS.UseVisualStyleBackColor = true;
+            this.btnSeeCS.Click += new System.EventHandler(this.btnSeeCS_Click);
+            // 
+            // btnDeleteAllWork
+            // 
+            this.btnDeleteAllWork.Location = new System.Drawing.Point(39, 36);
+            this.btnDeleteAllWork.Name = "btnDeleteAllWork";
+            this.btnDeleteAllWork.Size = new System.Drawing.Size(179, 35);
+            this.btnDeleteAllWork.TabIndex = 12;
+            this.btnDeleteAllWork.Text = "حذف همه کارها";
+            this.btnDeleteAllWork.UseVisualStyleBackColor = true;
+            this.btnDeleteAllWork.Click += new System.EventHandler(this.btnDeleteAllWork_Click);
+            // 
             // Manage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 23F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("B Nazanin", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(178)));
@@ -176,6 +237,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResponsible)).EndInit();
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -194,5 +256,10 @@
         private System.Windows.Forms.DataGridView dgvResponsible;
         private System.Windows.Forms.DataGridViewTextBoxColumn responsible_id;
         private System.Windows.Forms.DataGridViewTextBoxColumn responsible_title;
+        private System.Windows.Forms.Button btnDelType;
+        private System.Windows.Forms.Button btnDelRes;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button btnDeleteAllWork;
+        private System.Windows.Forms.Button btnSeeCS;
     }
 }
