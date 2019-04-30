@@ -126,6 +126,7 @@ namespace PmLite
             public static void TryReArrangePriorirty(DataGridView dgv, ChangeDirectuon direction)
             {
                 long destination_id = 0;
+                if (dgv.SelectedRows.Count < 1) return;
                 var cur_type = dgv.SelectedRows[0].Cells["type"].Value.ToString();
                 var cur_responsible = dgv.SelectedRows[0].Cells["responsible"].Value.ToString();
 

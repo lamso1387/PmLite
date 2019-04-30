@@ -27,7 +27,7 @@ namespace PmLite
                 && !string.IsNullOrWhiteSpace(cbResponsible.Text))
             {
               long id=  Publics.WorksClass.AddNewWork(tbContext.Text, long.Parse(tbPrio.Text), cbType.Text, cbResponsible.Text);
-                Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1,  Publics.WorksClass.WorkStatus.Undone,cbFilterResponsible.Text, cbType.Text, id);
+                Publics.WorksClass.LoadDataGridViewWorkList(dataGridView1,  Publics.WorksClass.WorkStatus.Undone,cbFilterResponsible.Text, cbTypeFilter.Text, id);
 
             }
 
